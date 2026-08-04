@@ -1,0 +1,2608 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="AI guardrails for any LLM framework — content classification + PII detection with zero framework dependencies">
+      
+      
+      
+        <link rel="canonical" href="https://atliq.github.io/guardex/guides/pii-detection/">
+      
+      
+        <link rel="prev" href="../safety-categories/">
+      
+      
+        <link rel="next" href="../pii-vault/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
+    
+    
+      
+        <title>PII Detection - GuardEx Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pii-detection" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GuardEx Documentation" class="md-header__button md-logo" aria-label="GuardEx Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GuardEx Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PII Detection
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/atliq/guardex-ai" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../sdk/" class="md-tabs__link">
+          
+  
+    
+  
+  SDK Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../deployment/docker/" class="md-tabs__link">
+          
+  
+    
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../notebooks/" class="md-tabs__link">
+          
+  
+    
+  
+  Interactive Notebooks
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GuardEx Documentation" class="md-nav__button md-logo" aria-label="GuardEx Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    GuardEx Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/atliq/guardex-ai" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    User Guide
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration-patterns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Integration Patterns
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../error-handling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Error Handling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safety-categories/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Safety Categories
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    PII Detection
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    PII Detection
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-entity-types-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Entity Types (31)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Entity Types (31)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#personal-information-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Personal Information (9)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credentials-secrets-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Credentials &amp; Secrets (6)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-keys-tokens-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Keys &amp; Tokens (8)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#financial-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Financial (3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-infrastructure-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Network &amp; Infrastructure (5)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pii-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII Actions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PII Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mask-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mask (Default)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#block" class="md-nav__link">
+    <span class="md-ellipsis">
+      Block
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-pii-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring PII Detection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring PII Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enabledisable-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable/Disable PII
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#select-specific-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Select Specific Entities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adjust-confidence-threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adjust Confidence Threshold
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-regex-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Regex Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guard-pii-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Guard PII Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Guard PII Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pii_scan-detection-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      pii_scan() - Detection Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pii_mask-detection-masking" class="md-nav__link">
+    <span class="md-ellipsis">
+      pii_mask() - Detection + Masking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#screen-combined-pii-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      screen() - Combined PII + Safety
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-direct-client-for-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Direct Client for PII
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using the Direct Client for PII">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pii-scan-detection-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII Scan (Detection Only)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pii-mask-detection-masking" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII Mask (Detection + Masking)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pii-in-input-vs-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII in Input vs. Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PII in Input vs. Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input PII
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output PII
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#piiresult-and-piientity-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      PIIResult and PIIEntity Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PIIResult and PIIEntity Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#piiresult" class="md-nav__link">
+    <span class="md-ellipsis">
+      PIIResult
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#piientity" class="md-nav__link">
+    <span class="md-ellipsis">
+      PIIEntity
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entity-detection-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entity Detection Details
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pii-vault/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PII Vault
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../injection-detection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Injection Detection
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../context-aware-policy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Context-Aware Policy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi-turn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multi-Turn Conversations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../observability/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Observability
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing & CI/CD
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Recipes & Examples
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Choosing Your Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sdk/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    SDK Reference
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            SDK Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/guard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/client/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GuardExClient
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/streaming/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streaming
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/policy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GuardExPolicy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/pii-vault/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PIIVault
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/injection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    InjectionDetector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/conversation-guard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ConversationGuard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Types & Constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/guardedllm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LangChain — GuardedLLM
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/callback-handler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    LangChain — CallbackHandler
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Deployment
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deployment/docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Docker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../notebooks/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Interactive Notebooks
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Interactive Notebooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-entity-types-31" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Entity Types (31)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Entity Types (31)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#personal-information-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      Personal Information (9)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credentials-secrets-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Credentials &amp; Secrets (6)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-keys-tokens-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Keys &amp; Tokens (8)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#financial-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Financial (3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-infrastructure-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Network &amp; Infrastructure (5)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pii-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII Actions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PII Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mask-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mask (Default)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#block" class="md-nav__link">
+    <span class="md-ellipsis">
+      Block
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-pii-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring PII Detection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring PII Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enabledisable-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enable/Disable PII
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#select-specific-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Select Specific Entities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adjust-confidence-threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adjust Confidence Threshold
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-regex-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Regex Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guard-pii-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Guard PII Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Guard PII Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pii_scan-detection-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      pii_scan() - Detection Only
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pii_mask-detection-masking" class="md-nav__link">
+    <span class="md-ellipsis">
+      pii_mask() - Detection + Masking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#screen-combined-pii-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      screen() - Combined PII + Safety
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-the-direct-client-for-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the Direct Client for PII
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using the Direct Client for PII">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pii-scan-detection-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII Scan (Detection Only)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pii-mask-detection-masking" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII Mask (Detection + Masking)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pii-in-input-vs-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      PII in Input vs. Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PII in Input vs. Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input PII
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output PII
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#piiresult-and-piientity-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      PIIResult and PIIEntity Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PIIResult and PIIEntity Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#piiresult" class="md-nav__link">
+    <span class="md-ellipsis">
+      PIIResult
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#piientity" class="md-nav__link">
+    <span class="md-ellipsis">
+      PIIEntity
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entity-detection-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entity Detection Details
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="pii-detection">PII Detection<a class="headerlink" href="#pii-detection" title="Permanent link">&para;</a></h1>
+<p>GuardEx detects and handles Personally Identifiable Information (PII) using <a href="https://github.com/urchade/GLiNER">GLiNER</a> with NVIDIA's <code>nvidia/gliner-pii</code> model. In server mode, all PII inference runs server-side - no local models needed. In local mode (<code>pip install guardex-ai[local]</code>), PII inference runs in-process using the GLiNER model.</p>
+<hr />
+<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    A[Input Text] --&gt; B[GuardEx Engine]
+    B --&gt; C[GLiNER Model]
+    C --&gt; D{PII Found?}
+    D --&gt;|No| E[Pass Through]
+    D --&gt;|Yes, action=mask| F["Replace with [LABEL]"]
+    D --&gt;|Yes, action=block| G[Block - check result.pii]
+    F --&gt; H[Continue Pipeline]
+
+    style F fill:#f59e0b,color:#000
+    style G fill:#ef4444,color:#fff
+    style E fill:#22c55e,color:#fff</code></pre>
+<ol>
+<li>Text is sent to the GuardEx engine (local or server)</li>
+<li>GLiNER runs to detect PII entities with confidence scores</li>
+<li>Based on your <code>pii_action</code> setting:</li>
+<li><strong><code>mask</code></strong>: PII is replaced with <code>[LABEL]</code> placeholders (e.g., <code>john@corp.com</code> → <code>[EMAIL]</code>)</li>
+<li><strong><code>block</code></strong>: The request is blocked - use <code>guard.screen()</code> and check <code>result.pii.has_pii</code></li>
+<li>The processed text continues through the pipeline</li>
+</ol>
+<hr />
+<h2 id="supported-entity-types-31">Supported Entity Types (31)<a class="headerlink" href="#supported-entity-types-31" title="Permanent link">&para;</a></h2>
+<p>GuardEx detects 31 PII entity types across 5 categories. All are enabled by default.</p>
+<h3 id="personal-information-9">Personal Information (9)<a class="headerlink" href="#personal-information-9" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entity Type</th>
+<th>Description</th>
+<th>Example</th>
+<th>Masked As</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>email</code></td>
+<td>Email addresses</td>
+<td><code>john@corp.com</code></td>
+<td><code>[EMAIL]</code></td>
+</tr>
+<tr>
+<td><code>phone_number</code></td>
+<td>Phone numbers</td>
+<td><code>555-123-4567</code></td>
+<td><code>[PHONE_NUMBER]</code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Person names</td>
+<td><code>John Smith</code></td>
+<td><code>[NAME]</code></td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td>Physical addresses</td>
+<td><code>123 Main St, NYC</code></td>
+<td><code>[ADDRESS]</code></td>
+</tr>
+<tr>
+<td><code>ssn</code></td>
+<td>Social Security Numbers</td>
+<td><code>123-45-6789</code></td>
+<td><code>[SSN]</code></td>
+</tr>
+<tr>
+<td><code>national_id</code></td>
+<td>National ID numbers</td>
+<td><code>AB123456C</code></td>
+<td><code>[NATIONAL_ID]</code></td>
+</tr>
+<tr>
+<td><code>passport_number</code></td>
+<td>Passport numbers</td>
+<td><code>X12345678</code></td>
+<td><code>[PASSPORT_NUMBER]</code></td>
+</tr>
+<tr>
+<td><code>date_of_birth</code></td>
+<td>Dates of birth</td>
+<td><code>March 15, 1990</code></td>
+<td><code>[DATE_OF_BIRTH]</code></td>
+</tr>
+<tr>
+<td><code>driver_license</code></td>
+<td>Driver's license numbers</td>
+<td><code>D123-4567-8901</code></td>
+<td><code>[DRIVER_LICENSE]</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="credentials-secrets-6">Credentials &amp; Secrets (6)<a class="headerlink" href="#credentials-secrets-6" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entity Type</th>
+<th>Description</th>
+<th>Example</th>
+<th>Masked As</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>password</code></td>
+<td>Passwords in context</td>
+<td><code>password is hunter2</code></td>
+<td><code>[PASSWORD]</code></td>
+</tr>
+<tr>
+<td><code>user_name</code></td>
+<td>Usernames / handles</td>
+<td><code>@johndoe</code></td>
+<td><code>[USER_NAME]</code></td>
+</tr>
+<tr>
+<td><code>private_key</code></td>
+<td>Private keys</td>
+<td><code>-----BEGIN RSA PRIVATE KEY-----</code></td>
+<td><code>[PRIVATE_KEY]</code></td>
+</tr>
+<tr>
+<td><code>jwt_token</code></td>
+<td>JWT tokens</td>
+<td><code>eyJhbGciOiJIUzI1NiIs...</code></td>
+<td><code>[JWT_TOKEN]</code></td>
+</tr>
+<tr>
+<td><code>auth_header</code></td>
+<td>Authorization headers</td>
+<td><code>Bearer sk-abc123...</code></td>
+<td><code>[AUTH_HEADER]</code></td>
+</tr>
+<tr>
+<td><code>secret</code></td>
+<td>Generic secrets</td>
+<td><code>client_secret=abc123def</code></td>
+<td><code>[SECRET]</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-keys-tokens-8">API Keys &amp; Tokens (8)<a class="headerlink" href="#api-keys-tokens-8" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entity Type</th>
+<th>Description</th>
+<th>Example</th>
+<th>Masked As</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key</code></td>
+<td>Generic API keys</td>
+<td><code>sk-abc123def456...</code></td>
+<td><code>[API_KEY]</code></td>
+</tr>
+<tr>
+<td><code>aws_key</code></td>
+<td>AWS access keys</td>
+<td><code>AKIAIOSFODNN7EXAMPLE</code></td>
+<td><code>[AWS_KEY]</code></td>
+</tr>
+<tr>
+<td><code>github_token</code></td>
+<td>GitHub tokens</td>
+<td><code>ghp_xxxxxxxxxxxx</code></td>
+<td><code>[GITHUB_TOKEN]</code></td>
+</tr>
+<tr>
+<td><code>slack_token</code></td>
+<td>Slack tokens</td>
+<td><code>xoxb-1234-5678-abcdef</code></td>
+<td><code>[SLACK_TOKEN]</code></td>
+</tr>
+<tr>
+<td><code>stripe_key</code></td>
+<td>Stripe API keys</td>
+<td><code>sk_live_abc123...</code></td>
+<td><code>[STRIPE_KEY]</code></td>
+</tr>
+<tr>
+<td><code>google_api_key</code></td>
+<td>Google API keys</td>
+<td><code>AIzaSyA...</code></td>
+<td><code>[GOOGLE_API_KEY]</code></td>
+</tr>
+<tr>
+<td><code>openai_key</code></td>
+<td>OpenAI API keys</td>
+<td><code>sk-proj-abc123...</code></td>
+<td><code>[OPENAI_KEY]</code></td>
+</tr>
+<tr>
+<td><code>twilio_sid</code></td>
+<td>Twilio SIDs</td>
+<td><code>AC1234567890abcdef</code></td>
+<td><code>[TWILIO_SID]</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="financial-3">Financial (3)<a class="headerlink" href="#financial-3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entity Type</th>
+<th>Description</th>
+<th>Example</th>
+<th>Masked As</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>credit_card</code></td>
+<td>Credit card numbers</td>
+<td><code>4111-1111-1111-1111</code></td>
+<td><code>[CREDIT_CARD]</code></td>
+</tr>
+<tr>
+<td><code>bank_account</code></td>
+<td>Bank account numbers</td>
+<td><code>1234567890</code></td>
+<td><code>[BANK_ACCOUNT]</code></td>
+</tr>
+<tr>
+<td><code>iban</code></td>
+<td>International bank accounts</td>
+<td><code>GB29NWBK60161331926819</code></td>
+<td><code>[IBAN]</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="network-infrastructure-5">Network &amp; Infrastructure (5)<a class="headerlink" href="#network-infrastructure-5" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entity Type</th>
+<th>Description</th>
+<th>Example</th>
+<th>Masked As</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_address</code></td>
+<td>IPv4 addresses</td>
+<td><code>192.168.1.1</code></td>
+<td><code>[IP_ADDRESS]</code></td>
+</tr>
+<tr>
+<td><code>ipv6_address</code></td>
+<td>IPv6 addresses</td>
+<td><code>2001:0db8:85a3::8a2e:0370:7334</code></td>
+<td><code>[IPV6_ADDRESS]</code></td>
+</tr>
+<tr>
+<td><code>mac_address</code></td>
+<td>MAC addresses</td>
+<td><code>00:1B:44:11:3A:B7</code></td>
+<td><code>[MAC_ADDRESS]</code></td>
+</tr>
+<tr>
+<td><code>hostname</code></td>
+<td>Server hostnames</td>
+<td><code>db-prod-01.internal.corp.com</code></td>
+<td><code>[HOSTNAME]</code></td>
+</tr>
+<tr>
+<td><code>database_url</code></td>
+<td>Database connection strings</td>
+<td><code>postgres://user:pass@host/db</code></td>
+<td><code>[DATABASE_URL]</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Custom PII entities</p>
+<p>Need to detect domain-specific PII (medical record numbers, employee IDs, etc.)? Use <code>pii_custom_regex</code> — see <a href="#custom-regex-patterns">Custom Regex Patterns</a> below.</p>
+</div>
+<hr />
+<h2 id="pii-actions">PII Actions<a class="headerlink" href="#pii-actions" title="Permanent link">&para;</a></h2>
+<h3 id="mask-default">Mask (Default)<a class="headerlink" href="#mask-default" title="Permanent link">&para;</a></h3>
+<p>PII is replaced with <code>[LABEL]</code> placeholders. The conversation continues with sanitized text.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">guardex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Guard</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">screen</span><span class="p">(</span><span class="s2">&quot;My email is john@corp.com, translate hello to French&quot;</span><span class="p">,</span> <span class="n">gate</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># &quot;My email is [EMAIL], translate hello to French&quot;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pii</span><span class="o">.</span><span class="n">has_pii</span><span class="p">)</span>       <span class="c1"># True</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pii</span><span class="o">.</span><span class="n">masked_text</span><span class="p">)</span>   <span class="c1"># &quot;My email is [EMAIL], translate hello to French&quot;</span>
+</span></code></pre></div>
+<h3 id="block">Block<a class="headerlink" href="#block" title="Permanent link">&para;</a></h3>
+<p>When <code>pii_action="block"</code>, the <code>Guard</code> class does <strong>not</strong> raise an exception. Instead, use <code>guard.screen()</code> and check the result:</p>
+<div class="admonition note">
+<p class="admonition-title">Guard does not raise PIIViolation</p>
+<p><code>PIIViolation</code> is only raised by the LangChain wrappers (<code>GuardedLLM</code>, <code>GuardExCallbackHandler</code>). With the <code>Guard</code> class, use <code>guard.screen()</code> and check <code>result.pii.has_pii</code>.</p>
+</div>
+<p>When <code>pii_action="block"</code> and PII is detected, the <code>ScreenResult</code> will have:</p>
+<ul>
+<li><code>result.blocked</code> → <code>True</code></li>
+<li><code>result.safe</code> → <code>False</code></li>
+<li><code>result.action</code> → <code>"block"</code></li>
+<li><code>result.pii.has_pii</code> → <code>True</code></li>
+</ul>
+<p>If you use <code>screen_or_raise()</code> with <code>pii_action="block"</code>, it raises <code>GuardExViolation</code> (not <code>PIIViolation</code>) because the result is blocked.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">guardex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">GuardExPolicy</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span><span class="n">pii_action</span><span class="o">=</span><span class="s2">&quot;block&quot;</span><span class="p">))</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">screen</span><span class="p">(</span><span class="s2">&quot;My SSN is 123-45-6789&quot;</span><span class="p">,</span> <span class="n">gate</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">pii</span><span class="o">.</span><span class="n">has_pii</span><span class="p">:</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PII detected at gate: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">gate</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pii</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">: score=</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="c1"># ssn: score=0.95</span>
+</span></code></pre></div>
+<hr />
+<h2 id="configuring-pii-detection">Configuring PII Detection<a class="headerlink" href="#configuring-pii-detection" title="Permanent link">&para;</a></h2>
+<h3 id="enabledisable-pii">Enable/Disable PII<a class="headerlink" href="#enabledisable-pii" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">guardex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">GuardExPolicy</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># PII enabled (default)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span><span class="n">pii_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># PII disabled</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span><span class="n">pii_enabled</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</span></code></pre></div>
+<h3 id="select-specific-entities">Select Specific Entities<a class="headerlink" href="#select-specific-entities" title="Permanent link">&para;</a></h3>
+<p>Detect only the entities you care about:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Only detect financial PII</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">pii_entities</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ssn&quot;</span><span class="p">,</span> <span class="s2">&quot;credit_card&quot;</span><span class="p">,</span> <span class="s2">&quot;bank_account&quot;</span><span class="p">],</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">))</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Only detect contact information</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">pii_entities</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;phone_number&quot;</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">],</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">))</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Detect everything (default)</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="kn">from</span><span class="w"> </span><span class="nn">guardex</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PII_ENTITIES</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">pii_entities</span><span class="o">=</span><span class="n">DEFAULT_PII_ENTITIES</span><span class="p">,</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">))</span>
+</span></code></pre></div>
+<h3 id="adjust-confidence-threshold">Adjust Confidence Threshold<a class="headerlink" href="#adjust-confidence-threshold" title="Permanent link">&para;</a></h3>
+<p>The <code>pii_threshold</code> controls how confident the model must be before flagging something as PII:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># High sensitivity (catches more, but may have false positives)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span><span class="n">pii_threshold</span><span class="o">=</span><span class="mf">0.4</span><span class="p">))</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Default sensitivity</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span><span class="n">pii_threshold</span><span class="o">=</span><span class="mf">0.85</span><span class="p">))</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Very strict (fewer detections, fewer false positives)</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span><span class="n">pii_threshold</span><span class="o">=</span><span class="mf">0.95</span><span class="p">))</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Threshold</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.3 - 0.6</td>
+<td>High sensitivity - catches most PII but may flag non-PII</td>
+</tr>
+<tr>
+<td>0.85</td>
+<td>Default - real PII consistently scores at or above this; the 0.6-0.8 false-positive band is excluded</td>
+</tr>
+<tr>
+<td>0.9 - 0.95</td>
+<td>Conservative - only the highest-confidence detections</td>
+</tr>
+</tbody>
+</table>
+<h3 id="custom-regex-patterns">Custom Regex Patterns<a class="headerlink" href="#custom-regex-patterns" title="Permanent link">&para;</a></h3>
+<p><code>pii_custom_regex</code> extends the built-in entity list with your own label → regex mappings, for domain-specific PII the GLiNER model doesn't know about (medical record numbers, employee IDs, internal ticket IDs, ...):</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">guardex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Guard</span><span class="p">,</span> <span class="n">GuardExPolicy</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">pii_custom_regex</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="s2">&quot;employee_id&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;EMP-\d</span><span class="si">{6}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="s2">&quot;medical_record_number&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;MRN-[A-Z]</span><span class="si">{2}</span><span class="s2">\d</span><span class="si">{8}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="p">},</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">))</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">screen</span><span class="p">(</span><span class="s2">&quot;Patient MRN-AB12345678 was seen by EMP-004821&quot;</span><span class="p">,</span> <span class="n">gate</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># &quot;Patient [MEDICAL_RECORD_NUMBER] was seen by [EMPLOYEE_ID]&quot;</span>
+</span></code></pre></div>
+<p>The dict key becomes both the entity label and the mask placeholder (uppercased), so <code>"employee_id"</code> masks to <code>[EMPLOYEE_ID]</code>. Patterns compile with <code>re.IGNORECASE</code>.</p>
+<p>Pair it with <code>pii_custom_context_keywords</code> to boost confidence when a keyword appears near a match:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">GuardExPolicy</span><span class="p">(</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">pii_custom_regex</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;employee_id&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;EMP-\d</span><span class="si">{6}</span><span class="s2">&quot;</span><span class="p">},</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">pii_custom_context_keywords</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;employee_id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;employee&quot;</span><span class="p">,</span> <span class="s2">&quot;staff&quot;</span><span class="p">,</span> <span class="s2">&quot;badge&quot;</span><span class="p">]},</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">))</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Server-mode limits</p>
+<p><code>pii_custom_regex</code> works in both local and server mode; the reference server caps it at 32 patterns of 512 characters each and rejects patterns that do not compile. <code>pii_custom_context_keywords</code>, <code>pii_deny_list</code>, and <code>pii_allow_list</code> only take effect in local mode.</p>
+</div>
+<hr />
+<h2 id="guard-pii-methods">Guard PII Methods<a class="headerlink" href="#guard-pii-methods" title="Permanent link">&para;</a></h2>
+<h3 id="pii_scan-detection-only">pii_scan() - Detection Only<a class="headerlink" href="#pii_scan-detection-only" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">()</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">pii_scan</span><span class="p">(</span><span class="s2">&quot;My email is john@corp.com and SSN is 123-45-6789&quot;</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">has_pii</span><span class="p">)</span>  <span class="c1"># True</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">: score=</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>          <span class="sa">f</span><span class="s2">&quot;text=&#39;</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; span=(</span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">entity</span><span class="o">.</span><span class="n">end</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="pii_mask-detection-masking">pii_mask() - Detection + Masking<a class="headerlink" href="#pii_mask-detection-masking" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">()</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">masked</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">pii_mask</span><span class="p">(</span><span class="s2">&quot;Call John at john@corp.com or 555-123-4567&quot;</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">masked</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># &quot;Call [NAME] at [EMAIL] or [PHONE_NUMBER]&quot;</span>
+</span></code></pre></div>
+<h3 id="screen-combined-pii-safety">screen() - Combined PII + Safety<a class="headerlink" href="#screen-combined-pii-safety" title="Permanent link">&para;</a></h3>
+<p>The <code>screen()</code> method combines PII detection with safety classification in a single API call:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">guard</span> <span class="o">=</span> <span class="n">Guard</span><span class="p">()</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">screen</span><span class="p">(</span><span class="s2">&quot;My SSN is 123-45-6789, how do I file taxes?&quot;</span><span class="p">,</span> <span class="n">gate</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pii</span><span class="o">.</span><span class="n">has_pii</span><span class="p">)</span>           <span class="c1"># True</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>                  <span class="c1"># &quot;My SSN is [SSN], how do I file taxes?&quot;</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">classify</span><span class="o">.</span><span class="n">safe</span><span class="p">)</span>         <span class="c1"># True</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">action</span><span class="p">)</span>                <span class="c1"># &quot;mask&quot;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="using-the-direct-client-for-pii">Using the Direct Client for PII<a class="headerlink" href="#using-the-direct-client-for-pii" title="Permanent link">&para;</a></h2>
+<h3 id="pii-scan-detection-only">PII Scan (Detection Only)<a class="headerlink" href="#pii-scan-detection-only" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">guardex</span><span class="w"> </span><span class="kn">import</span> <span class="n">GuardExClient</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">with</span> <span class="n">GuardExClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:8001&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">pii_scan</span><span class="p">(</span><span class="s2">&quot;My email is john@corp.com and SSN is 123-45-6789&quot;</span><span class="p">)</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;has_pii&quot;</span><span class="p">])</span>  <span class="c1"># True</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]:</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">entity</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: score=</span><span class="si">{</span><span class="n">entity</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>              <span class="sa">f</span><span class="s2">&quot;span=(</span><span class="si">{</span><span class="n">entity</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">entity</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="pii-mask-detection-masking">PII Mask (Detection + Masking)<a class="headerlink" href="#pii-mask-detection-masking" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">with</span> <span class="n">GuardExClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:8001&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">pii_mask</span><span class="p">(</span><span class="s2">&quot;Call John at john@corp.com or 555-123-4567&quot;</span><span class="p">)</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;has_pii&quot;</span><span class="p">])</span>      <span class="c1"># True</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;masked_text&quot;</span><span class="p">])</span>  <span class="c1"># &quot;Call [NAME] at [EMAIL] or [PHONE_NUMBER]&quot;</span>
+</span></code></pre></div>
+<hr />
+<h2 id="pii-in-input-vs-output">PII in Input vs. Output<a class="headerlink" href="#pii-in-input-vs-output" title="Permanent link">&para;</a></h2>
+<p>GuardEx screens PII in both directions:</p>
+<h3 id="input-pii">Input PII<a class="headerlink" href="#input-pii" title="Permanent link">&para;</a></h3>
+<p>When PII is detected in the user's prompt:
+- <strong>mask</strong>: The text is rewritten with <code>[LABEL]</code> placeholders. The LLM never sees the actual PII.
+- <strong>block</strong>: The result is blocked - check <code>result.pii.has_pii</code> to detect and handle.</p>
+<h3 id="output-pii">Output PII<a class="headerlink" href="#output-pii" title="Permanent link">&para;</a></h3>
+<p>When PII is detected in the LLM's response:
+- <strong>mask</strong>: The response text is rewritten with placeholders before being returned to the user.
+- <strong>block</strong>: The result is blocked - check <code>result.pii.has_pii</code> and do not return the response to the user.</p>
+<hr />
+<h2 id="piiresult-and-piientity-types">PIIResult and PIIEntity Types<a class="headerlink" href="#piiresult-and-piientity-types" title="Permanent link">&para;</a></h2>
+<p>The <code>Guard</code> class returns typed result objects:</p>
+<h3 id="piiresult">PIIResult<a class="headerlink" href="#piiresult" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">pii_scan</span><span class="p">(</span><span class="s2">&quot;text with PII&quot;</span><span class="p">)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">result</span><span class="o">.</span><span class="n">has_pii</span>        <span class="c1"># bool - whether PII was detected</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">result</span><span class="o">.</span><span class="n">entities</span>       <span class="c1"># list[PIIEntity] - detected entities</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">result</span><span class="o">.</span><span class="n">masked_text</span>    <span class="c1"># str | None - text with PII replaced (None for pii_scan; populated by screen() and pii_mask())</span>
+</span></code></pre></div>
+<h3 id="piientity">PIIEntity<a class="headerlink" href="#piientity" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">entity</span><span class="o">.</span><span class="n">text</span>    <span class="c1"># str - detected text (e.g., &quot;john@example.com&quot;)</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">entity</span><span class="o">.</span><span class="n">label</span>   <span class="c1"># str - entity type (e.g., &quot;email&quot;)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">entity</span><span class="o">.</span><span class="n">score</span>   <span class="c1"># float - confidence (0.0-1.0)</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">entity</span><span class="o">.</span><span class="n">start</span>   <span class="c1"># int - character offset</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">entity</span><span class="o">.</span><span class="n">end</span>     <span class="c1"># int - character offset</span>
+</span></code></pre></div>
+<hr />
+<h2 id="entity-detection-details">Entity Detection Details<a class="headerlink" href="#entity-detection-details" title="Permanent link">&para;</a></h2>
+<p>Each detected entity includes:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td><code>str</code></td>
+<td>The detected PII text (e.g., <code>"john@corp.com"</code>)</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>str</code></td>
+<td>Entity type (e.g., <code>"email"</code>, <code>"ssn"</code>)</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>float</code></td>
+<td>Confidence score (0.0 - 1.0)</td>
+</tr>
+<tr>
+<td><code>start</code></td>
+<td><code>int</code></td>
+<td>Character offset where the entity starts</td>
+</tr>
+<tr>
+<td><code>end</code></td>
+<td><code>int</code></td>
+<td>Character offset where the entity ends</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>start</code> and <code>end</code> offsets allow you to locate the exact position in the original text.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 GuardEx
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://pypi.org/project/guardex-ai/" target="_blank" rel="noopener" title="GuardEx on PyPI" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "content.code.annotate", "content.tabs.link", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.instant", "navigation.tracking", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>
