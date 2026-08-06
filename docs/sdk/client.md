@@ -62,7 +62,7 @@ client.screen(
     pii_action: Literal["mask", "block", "none"] = "mask",
     categories: list[str] | None = None,
     pii_entities: list[str] | None = None,
-    pii_threshold: float = 0.7,
+    pii_threshold: float = 0.85,
     scope_topics: list[str] | None = None,
     scope_utterances: dict[str, list[str]] | None = None,
     scope_examples: list[str] | None = None,
@@ -149,7 +149,7 @@ client.screen_batch(
     pii_action: Literal["mask", "block", "none"] = "mask",
     categories: list[str] | None = None,
     pii_entities: list[str] | None = None,
-    pii_threshold: float = 0.7,
+    pii_threshold: float = 0.85,
     cascade_mode: str = "safety",
     extra_headers: dict[str, str] | None = None,
 ) -> list[dict]
@@ -233,7 +233,7 @@ Scan text for PII without masking or blocking.
 client.pii_scan(
     text: str,
     entities: list[str] | None = None,
-    threshold: float = 0.7,
+    threshold: float = 0.85,
     extra_headers: dict[str, str] | None = None,
 ) -> dict
 ```
@@ -260,7 +260,7 @@ Scan and mask PII in text.
 client.pii_mask(
     text: str,
     entities: list[str] | None = None,
-    threshold: float = 0.7,
+    threshold: float = 0.85,
     extra_headers: dict[str, str] | None = None,
 ) -> dict
 ```

@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Literal, TYPE_CHECKING
 
 import httpx
 
+from ._constants import DEFAULT_PII_THRESHOLD
 from ._transport import (
     DEFAULT_API_ERROR_MESSAGES,
     HEADER_REQUEST_ID as _HEADER_REQUEST_ID,
@@ -235,7 +236,7 @@ class AsyncGuardExClient:
         pii_action: Literal["mask", "block", "none"] = "mask",
         categories: List[str] | None = None,
         pii_entities: List[str] | None = None,
-        pii_threshold: float = 0.7,
+        pii_threshold: float = DEFAULT_PII_THRESHOLD,
         pii_custom_regex: Dict[str, str] | None = None,
         scope_topics: List[str] | None = None,
         scope_utterances: Dict[str, List[str]] | None = None,
@@ -319,7 +320,7 @@ class AsyncGuardExClient:
         pii_action: Literal["mask", "block", "none"] = "mask",
         categories: List[str] | None = None,
         pii_entities: List[str] | None = None,
-        pii_threshold: float = 0.7,
+        pii_threshold: float = DEFAULT_PII_THRESHOLD,
         pii_custom_regex: Dict[str, str] | None = None,
         cascade_mode: str = "safety",
         extra_headers: Dict[str, str] | None = None,
@@ -412,7 +413,7 @@ class AsyncGuardExClient:
         self,
         text: str,
         entities: List[str] | None = None,
-        threshold: float = 0.7,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         extra_headers: Dict[str, str] | None = None,
     ) -> Dict[str, Any]:
         """Scan text for PII.
@@ -433,7 +434,7 @@ class AsyncGuardExClient:
         self,
         text: str,
         entities: List[str] | None = None,
-        threshold: float = 0.7,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         extra_headers: Dict[str, str] | None = None,
     ) -> Dict[str, Any]:
         """Scan and mask PII in text.

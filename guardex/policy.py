@@ -8,6 +8,8 @@ import os
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, List, Literal
 
+from guardex._constants import DEFAULT_PII_THRESHOLD
+
 if TYPE_CHECKING:
     from guardex.safety_route import SafetyRoute
 
@@ -205,9 +207,7 @@ class GuardExPolicy:
     pii_enabled: bool = True
     pii_entities: List[str] = field(default_factory=lambda: list(DEFAULT_PII_ENTITIES))
     pii_action: Literal["mask", "block"] = "mask"
-    # 0.85 default keeps real-PII recall near 100% while excluding the
-    # 0.6-0.8 false-positive band where short conversational tokens land.
-    pii_threshold: float = 0.85
+    pii_threshold: float = DEFAULT_PII_THRESHOLD
 
     # PII customization extends the built-in detector with project-scoped rules.
     pii_deny_list: List[str] = field(default_factory=list)

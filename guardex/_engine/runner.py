@@ -20,6 +20,8 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, List, Literal, Optional
 
+from guardex._constants import DEFAULT_PII_THRESHOLD
+
 logger = logging.getLogger(__name__)
 
 _init_lock = threading.Lock()
@@ -133,7 +135,7 @@ class LocalRunner:
         self,
         text: str,
         entities: Optional[List[str]] = None,
-        threshold: float = 0.7,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         mask: bool = False,
         deny_list: Optional[List[str]] = None,
         allow_list: Optional[List[str]] = None,
@@ -235,7 +237,7 @@ class LocalRunner:
         pii_action: Literal["mask", "block", "none"] = "mask",
         categories: Optional[List[str]] = None,
         pii_entities: Optional[List[str]] = None,
-        pii_threshold: float = 0.7,
+        pii_threshold: float = DEFAULT_PII_THRESHOLD,
         pii_deny_list: Optional[List[str]] = None,
         pii_allow_list: Optional[List[str]] = None,
         pii_custom_regex: Optional[dict[str, str]] = None,
@@ -445,7 +447,7 @@ class LocalRunner:
         self,
         text: str,
         entities: Optional[List[str]] = None,
-        threshold: float = 0.7,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         extra_headers: Optional[dict[str, str]] = None,
     ) -> dict[str, Any]:
         """Scan text for PII. Returns raw pii dict (no masked_text)."""
@@ -457,7 +459,7 @@ class LocalRunner:
         self,
         text: str,
         entities: Optional[List[str]] = None,
-        threshold: float = 0.7,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         extra_headers: Optional[dict[str, str]] = None,
     ) -> dict[str, Any]:
         """Scan and mask PII. Returns raw pii dict with masked_text."""
@@ -471,7 +473,7 @@ class LocalRunner:
         pii_action: Literal["mask", "block", "none"] = "mask",
         categories: Optional[List[str]] = None,
         pii_entities: Optional[List[str]] = None,
-        pii_threshold: float = 0.7,
+        pii_threshold: float = DEFAULT_PII_THRESHOLD,
         pii_custom_regex: Optional[dict[str, str]] = None,
         cascade_mode: str = "safety",
         extra_headers: Optional[dict[str, str]] = None,

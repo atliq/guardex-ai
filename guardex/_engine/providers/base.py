@@ -10,6 +10,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
+from guardex._constants import DEFAULT_PII_THRESHOLD
+
 if TYPE_CHECKING:
     import numpy as np
 
@@ -24,7 +26,7 @@ class PiiProvider(Protocol):
         self,
         text: str,
         entities: list[str] | None = None,
-        threshold: float = 0.3,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         custom_regex: dict[str, Any] | None = None,
         deny_list: set[str] | None = None,
         allow_list: set[str] | None = None,

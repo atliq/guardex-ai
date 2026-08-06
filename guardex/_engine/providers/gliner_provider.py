@@ -18,6 +18,7 @@ import logging
 import re
 from typing import Any
 
+from guardex._constants import DEFAULT_PII_THRESHOLD
 from guardex._engine.ml.model_manager import get_gliner_model
 from guardex._engine.services.pii_detector import DEFAULT_ENTITIES
 from guardex._engine.services.pii_regex import (
@@ -40,7 +41,7 @@ class GlinerPiiProvider:
         self,
         text: str,
         entities: list[str] | None = None,
-        threshold: float = 0.3,
+        threshold: float = DEFAULT_PII_THRESHOLD,
         *,
         custom_regex: dict[str, re.Pattern[str]] | None = None,
         deny_list: set[str] | None = None,
@@ -56,7 +57,7 @@ class GlinerPiiProvider:
         entities : list[str], optional
             Entity types to detect. Defaults to DEFAULT_ENTITIES.
         threshold : float
-            Minimum confidence to emit a finding (default 0.3).
+            Minimum confidence to emit a finding.
         custom_regex : dict, optional
             Extra regex patterns from user-defined custom labels.
         deny_list : set[str], optional
