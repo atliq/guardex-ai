@@ -6,6 +6,41 @@ project tries to follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Local web UI served by the reference server: `guardex-server --ui` mounts
+  a Playground, a Logs view, and a Config editor at `http://127.0.0.1:8001`.
+  Install with `pip install 'guardex-ai[ui]'`. The UI has no authentication,
+  so `--ui` refuses a non-loopback `--host` unless `--ui-unsafe-bind` is
+  passed.
+- `GET/PUT /v1/config`, `POST /v1/config/reset`, `POST /v1/config/save` —
+  server-side policy defaults applied to any request field left unset.
+  Save writes non-default fields to `guardex.policy.yaml` in the working
+  directory, loadable via `GuardExPolicy.from_yaml()`.
+- `GET /v1/config/schema` — the declarative field list backing the Config
+  page, plus the available PII entity and safety category options.
+- `GET /v1/logs`, `GET /v1/logs/stats`, `DELETE /v1/logs` — the last 1000
+  screening calls held in memory, with per-gate timings taken from the
+  diagnostics the runner already produces. Request text is excluded unless
+  the server is started with `--log-text`.
+- `GET /v1/meta` — package version and which ML engines are loaded.
+- `/v1/screen` accepts `pii_deny_list`, `pii_allow_list`, and
+  `pii_custom_context_keywords`. All three were already supported by the
+  in-process runner but were not reachable over HTTP.
+
+### Changed
+
+- `/v1/screen` resolves an omitted `pii_threshold` to `DEFAULT_PII_THRESHOLD`
+  (0.85) instead of a hardcoded 0.7, matching in-process `Guard()`. Callers
+  that relied on the looser server default must now pass `pii_threshold`
+  explicitly.
+
+### Deprecated
+
+- `guardex-dashboard` is superseded by `guardex-server --ui`. Its span buffer
+  only ever filled from in-process `Guard()` usage, so it showed nothing for
+  traffic served by `guardex-server`. It will be removed in a future release.
+
 ## [0.2.0] - 2026-07-11
 
 ### Added

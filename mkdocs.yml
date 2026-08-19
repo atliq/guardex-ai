@@ -101,6 +101,7 @@ nav:
       - Injection Detection: guides/injection-detection.md
       - Context-Aware Policy: guides/context-aware-policy.md
       - Multi-Turn Conversations: guides/multi-turn.md
+      - Local UI: guides/local-ui.md
       - Observability: guides/observability.md
       - Testing & CI/CD: guides/testing.md
       - Recipes & Examples: guides/examples.md

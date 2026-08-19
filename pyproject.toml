@@ -101,6 +101,14 @@ server = [
     "pydantic>=2",
     "uvicorn>=0.29",
 ]
+# Local web UI (Playground, Logs, Config) served by `guardex-server --ui`.
+# Pair with [local] for the ML engines: pip install 'guardex-ai[local,ui]'
+ui = [
+    "fastapi>=0.110",
+    "pydantic>=2",
+    "uvicorn>=0.29",
+    "pyyaml>=6.0",
+]
 # Development dependencies
 dev = [
     "pytest>=8",
@@ -151,7 +159,7 @@ include = ["guardex*"]
 # The previous exclude="guardex.server*" line was a no-op and was removed.
 
 [tool.setuptools.package-data]
-guardex = ["py.typed", "dashboard_assets/*"]
+guardex = ["py.typed", "dashboard_assets/*", "ui_assets/*", "ui_assets/assets/*"]
 
 # Note: test files must not be placed inside guardex/ — setuptools exclude-package-data
 # does not apply to .py source files. Keep all test files in /tests.

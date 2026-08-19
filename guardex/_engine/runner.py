@@ -129,6 +129,8 @@ class LocalRunner:
             "categories": raw.get("categories", []),
             "confidence": raw.get("confidence", 1.0),
             "description": raw.get("description"),
+            "decided_by": raw.get("_cascade_path") or getattr(provider, "name", ""), # Which cascade tier produced this verdict
+
         }
 
     def _pii_raw(
@@ -293,6 +295,7 @@ class LocalRunner:
                         "categories": ["S0"],
                         "confidence": 1.0,
                         "description": val.reason,
+                        "decided_by": "input_validation",
                     },
                     "pii": {"has_pii": False, "entities": []},
                     "text": text,
@@ -322,6 +325,7 @@ class LocalRunner:
                         "categories": [kw.category],
                         "confidence": 1.0,
                         "description": f"Keyword match: {kw.pattern}",
+                        "decided_by": "keyword_gate",
                     },
                     "pii": {"has_pii": False, "entities": []},
                     "text": text,

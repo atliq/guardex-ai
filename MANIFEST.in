@@ -36,3 +36,5 @@ recursive-exclude * .env
 recursive-exclude * .env.*
 recursive-exclude * .DS_Store
 recursive-exclude * Thumbs.db
+recursive-include guardex/ui_assets *
+prune ui

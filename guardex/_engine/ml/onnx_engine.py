@@ -190,10 +190,20 @@ class OnnxSafetyEngine:
         unsafe_prob = probs[1] if len(probs) > 1 else probs[0]
 
         if unsafe_prob < self._unsafe_threshold:
-            return {"safe": True, "category": None, "categories": []}
+            return {
+                "safe": True,
+                "category": None,
+                "categories": [],
+                "confidence": float(1.0 - unsafe_prob),
+            }
 
         # Binary model can't determine specific category - return generic unsafe
-        return {"safe": False, "category": None, "categories": []}
+        return {
+            "safe": False,
+            "category": None,
+            "categories": [],
+            "confidence": float(unsafe_prob),
+        }
 
     def _parse_multilabel(
         self,
@@ -203,7 +213,7 @@ class OnnxSafetyEngine:
         """Multi-label classification: one output per category."""
         probs = _sigmoid(logits)
 
-        flagged: list[str] = []
+        flagged: list[tuple[str, float]] = []
         for idx, prob in enumerate(probs):
             if prob >= self._unsafe_threshold:
                 label = self._label_map.get(idx)
@@ -211,15 +221,21 @@ class OnnxSafetyEngine:
                     # Map to GuardEx S-code if mapping exists
                     category = self._category_map.get(label, label)
                     if categories is None or category in categories:
-                        flagged.append(category)
+                        flagged.append((category, float(prob)))
 
         if not flagged:
-            return {"safe": True, "category": None, "categories": []}
+            return {
+                "safe": True,
+                "category": None,
+                "categories": [],
+                "confidence": float(1.0 - max(probs, default=0.0)),
+            }
 
         return {
             "safe": False,
-            "category": flagged[0],
-            "categories": flagged,
+            "category": flagged[0][0],
+            "categories": [c for c, _ in flagged],
+            "confidence": max(p for _, p in flagged),
         }
 
     @property

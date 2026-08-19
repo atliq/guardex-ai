@@ -168,6 +168,13 @@ def _maybe_load_yaml(settings: LocalSettings) -> None:
             _apply("OLLAMA_URL", "ollama_url", models["ollama_url"])
         if "ollama_model" in models:
             _apply("OLLAMA_MODEL", "ollama_model", models["ollama_model"])
+        grounding = data.get("grounding", {})
+        if "enabled" in grounding:
+            _apply("GROUNDING_ENABLED", "grounding_enabled", bool(grounding["enabled"]))
+        if "model" in grounding:
+            _apply("GROUNDING_NLI_MODEL", "grounding_nli_model", grounding["model"])
+        if "mode" in grounding:
+            _apply("GROUNDING_DEFAULT_MODE", "grounding_default_mode", grounding["mode"])
         policy = data.get("policy", {})
         if "fail_open" in policy:
             _apply("FAIL_OPEN", "fail_open", bool(policy["fail_open"]))

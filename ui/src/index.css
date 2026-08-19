@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 60% 99%;
+    --foreground: 256 32% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 256 32% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 256 32% 9%;
+    --primary: 261 81% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 266 54% 97%;
+    --secondary-foreground: 261 73% 45%;
+    --muted: 266 54% 97%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 264 56% 98%;
+    --accent-foreground: 261 73% 45%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 263 35% 93%;
+    --input: 263 35% 93%;
+    --ring: 261 81% 53%;
+    --radius: 0.375rem;
+
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 9% 46%;
+    --sidebar-primary: 220 82% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 13% 9%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 220 82% 48%;
+  }
+
+  .dark {
+    --background: 251 43% 12%;
+    --foreground: 263 60% 96%;
+    --card: 251 40% 16%;
+    --card-foreground: 263 60% 96%;
+    --popover: 251 40% 16%;
+    --popover-foreground: 263 60% 96%;
+    --primary: 255 92% 76%;
+    --primary-foreground: 251 43% 12%;
+    --secondary: 251 37% 26%;
+    --secondary-foreground: 263 60% 96%;
+    --muted: 251 37% 26%;
+    --muted-foreground: 255 22% 67%;
+    --accent: 251 37% 26%;
+    --accent-foreground: 263 60% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 251 37% 26%;
+    --input: 251 37% 26%;
+    --ring: 255 92% 76%;
+
+    --success: 160 84% 39%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --sidebar-background: 0 0% 6%;
+    --sidebar-foreground: 0 0% 64%;
+    --sidebar-primary: 220 82% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 220 82% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}

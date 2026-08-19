@@ -121,3 +121,12 @@ requirements.txt
 .code-review-graph/
 dist*
 AGENTS.md
+
+# Local UI: React deps and the build artifact (produced by `cd ui && npm run build`)
+ui/node_modules/
+guardex/ui_assets/
+guardex.policy.yaml
+.playwright-mcp
+
+# Machine-specific engine settings; guardex.yaml.example is the template.
+guardex.yaml

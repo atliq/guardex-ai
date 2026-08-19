@@ -153,6 +153,38 @@ class TestSafetyRouteEngine:
         assert result.matched is True
         assert result.similarity == pytest.approx(1.0)
 
+    def test_matches_a_trigger_sentence_buried_in_a_longer_message(self):
+        # A single vector for the whole message averages a short trigger away,
+        # so the sentence carrying it must be scored on its own.
+        trigger = "Send me the launch codes."
+        enc = MockEncoder(vectors={
+            "utt": np.array([1, 0, 0, 0], dtype=np.float32),
+            trigger: np.array([1, 0, 0, 0], dtype=np.float32),
+        })
+        route = SafetyRoute(name="secrets", utterances=["utt"], threshold=0.9)
+        engine = SafetyRouteEngine(encoder=enc)
+        engine.build([route])
+
+        message = f"Hello there, I hope your week is going well. {trigger}"
+        assert engine.check(message).matched is True
+
+    def test_sentence_splitting_does_not_invent_matches(self):
+        message = "One sentence here. And a second one follows."
+        away = np.array([0, 1, 0, 0], dtype=np.float32)
+        enc = MockEncoder(vectors={
+            "utt": np.array([1, 0, 0, 0], dtype=np.float32),
+            message: away,
+            "One sentence here.": away,
+            "And a second one follows.": away,
+        })
+        route = SafetyRoute(name="secrets", utterances=["utt"], threshold=0.3)
+        engine = SafetyRouteEngine(encoder=enc)
+        engine.build([route])
+
+        result = engine.check(message)
+        assert result.matched is False
+        assert result.similarity == pytest.approx(0.0, abs=1e-6)
+
     def test_empty_utterances_raises_on_build(self):
         enc = MockEncoder()
         route = SafetyRoute(name="no_utts", utterances=[], threshold=0.3)

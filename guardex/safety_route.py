@@ -114,6 +114,17 @@ class SafetyRouteResult:
     description: str = ""
 
 
+def _segments(query: str) -> list[str]:
+    """The whole query plus each of its sentences, deduplicated in order."""
+    from guardex._engine.ml.grounding.splitter import split_sentences
+
+    out = [query]
+    for sentence in split_sentences(query):
+        if sentence not in out:
+            out.append(sentence)
+    return out
+
+
 class SafetyRouteEngine:
     """Matches queries against user-defined safety routes.
 
@@ -225,7 +236,9 @@ class SafetyRouteEngine:
             )
 
         encoder = self._get_encoder()
-        query_vec = encoder.encode([query], normalize=True)[0]
+        # One vector for a long message averages a short trigger phrase away,
+        # so each sentence is scored on its own alongside the whole text.
+        query_vecs = np.asarray(encoder.encode(_segments(query), normalize=True))
 
         best_match: SafetyRoute | None = None
         best_similarity = 0.0
@@ -235,8 +248,8 @@ class SafetyRouteEngine:
             embeddings = route_embeddings.get(route.name)
             if embeddings is None:
                 continue
-            # Max similarity to any utterance in this route
-            similarities = embeddings @ query_vec
+            # Max similarity between any utterance and any segment
+            similarities = embeddings @ query_vecs.T
             max_sim = float(np.max(similarities))
             if max_sim > best_raw_similarity:
                 best_raw_similarity = max_sim

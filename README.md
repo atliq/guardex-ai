@@ -277,6 +277,27 @@ front of the endpoint; there is no GuardEx-hosted service.
 
 ---
 
+## Local UI
+
+The reference server can also serve a browser UI on the same port:
+
+```bash
+pip install 'guardex-ai[local,ui]'
+guardex-server --ui          # http://127.0.0.1:8001
+```
+
+- **Playground** — screen text and see the verdict, detected entities, and
+  per-gate timings
+- **Logs** — the last 1000 screening calls, in memory, cleared on restart
+- **Config** — every policy knob, applied live, saveable to
+  `guardex.policy.yaml`
+
+No Node required: the wheel ships prebuilt assets. There is no
+authentication, so `--ui` refuses a non-loopback `--host` unless you pass
+`--ui-unsafe-bind`. See [docs/guides/local-ui.md](docs/guides/local-ui.md).
+
+---
+
 ## Architecture
 
 ```

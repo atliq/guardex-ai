@@ -28,8 +28,14 @@ import socket
 import sys
 import threading
 import time
+import warnings
 import webbrowser
 from collections import deque
+
+_DEPRECATION = (
+    "guardex-dashboard is superseded by `guardex-server --ui` and will be "
+    "removed in a future release."
+)
 
 logger = logging.getLogger(__name__)
 
@@ -235,6 +241,7 @@ def start_dashboard(port: int = 7865, open_browser: bool = True) -> None:
         guard = Guard()
         result = guard.screen(user_input, gate="input")
     """
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
     if not _OTEL_AVAILABLE or not _FLASK_AVAILABLE:
         raise ImportError(
             "Dashboard requires optional dependencies. "
@@ -265,6 +272,7 @@ def start_dashboard(port: int = 7865, open_browser: bool = True) -> None:
 
 def _cli() -> None:
     """Entry point for the ``guardex-dashboard`` CLI command."""
+    print(f"DeprecationWarning: {_DEPRECATION}")
     if not _OTEL_AVAILABLE or not _FLASK_AVAILABLE:
         raise SystemExit(
             "Dashboard requires optional dependencies. "
