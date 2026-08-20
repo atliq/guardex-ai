@@ -19,6 +19,15 @@ GuardEx is a Python SDK that screens LLM inputs and outputs for unsafe content, 
 
 ## Quick Start
 
+Install the GuardEx setup skill into Claude Code, Cursor, Codex, or any
+[Agent Skills](https://agentskills.io)-compatible agent:
+
+```bash
+npx skills add atliq/guardex-ai
+```
+
+To set up by hand:
+
 ```bash
 pip install 'guardex-ai[local]'    # adds in-process ML engines
 ```
