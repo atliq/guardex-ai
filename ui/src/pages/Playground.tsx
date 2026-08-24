@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { GateCard } from "@/components/GateCard";
 import { gateLabel, namedGates } from "@/lib/gates";
 import {
@@ -274,7 +275,14 @@ export default function Playground() {
 
         </div>
 
-        <aside className="xl:sticky xl:top-[76px] xl:h-[calc(100vh-6.5rem)]">
+        <aside
+          className={cn(
+            "xl:sticky xl:top-[76px]",
+            result && jsonOpen
+              ? "xl:h-[calc(100vh-6.5rem)]"
+              : "xl:max-h-[calc(100vh-6.5rem)]",
+          )}
+        >
           <Card className="flex h-full flex-col overflow-hidden">
             <CardContent className="flex min-h-0 flex-1 flex-col gap-3 p-4">
               <div className="flex items-center justify-between gap-3">
@@ -290,7 +298,7 @@ export default function Playground() {
 
               {result ? (
                 <div className="flex min-h-0 flex-1 flex-col gap-3">
-                  <div className="max-h-[30%] shrink-0 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 font-mono text-sm">
+                  <div className="max-h-56 shrink-0 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 font-mono text-sm">
                     {result.text}
                   </div>
 
