@@ -1,0 +1,76 @@
+/* ── GuardEx dark-first theme overrides ─────────────────────────── */
+
+/* Force Mermaid diagrams to use dark background in both modes */
+.mermaid {
+  background: #1e1e2e !important;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* Ensure Mermaid text is readable on dark background */
+.mermaid text,
+.mermaid .nodeLabel,
+.mermaid .edgeLabel,
+.mermaid .label,
+.mermaid .cluster-label {
+  fill: #cdd6f4 !important;
+  color: #cdd6f4 !important;
+}
+
+/* Mermaid node styling */
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node circle {
+  fill: #313244 !important;
+  stroke: #89b4fa !important;
+}
+
+/* Mermaid edge/arrow styling */
+.mermaid .edgePath path {
+  stroke: #89b4fa !important;
+}
+
+.mermaid .arrowheadPath {
+  fill: #89b4fa !important;
+}
+
+/* Mermaid subgraph styling */
+.mermaid .cluster rect {
+  fill: #181825 !important;
+  stroke: #45475a !important;
+}
+
+.mermaid .cluster-label .nodeLabel {
+  fill: #a6adc8 !important;
+  color: #a6adc8 !important;
+}
+
+/* Sequence diagram specific */
+.mermaid .actor {
+  fill: #313244 !important;
+  stroke: #89b4fa !important;
+}
+
+.mermaid .actor-line {
+  stroke: #585b70 !important;
+}
+
+.mermaid rect.note {
+  fill: #45475a !important;
+  stroke: #89b4fa !important;
+}
+
+.mermaid .messageText,
+.mermaid .loopText {
+  fill: #cdd6f4 !important;
+}
+
+/* Decision diamond */
+.mermaid .node .label {
+  color: #cdd6f4 !important;
+}
+
+/* Graph/flowchart specific */
+.mermaid .flowchart-link {
+  stroke: #89b4fa !important;
+}
